@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.8.0
+    container_name: logstash
+    volumes:
+      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    network_mode: "host"  # Permite que o Logstash acesse serviços na rede do host, incluindo Elasticsearch em 0.0.0.0
+    environment:
+      LS_JAVA_OPTS: "-Xms512m -Xmx512m"  # Ajusta a alocação de memória para o Logstash
+

@@ -1,0 +1,37 @@
+version: '3.8'
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.0
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ELASTIC_PASSWORD=2PpwgL83.5fZ
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=false
+      - network.host=0.0.0.0
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    networks:
+      - esnet
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.8.0
+    container_name: logstash
+    volumes:
+      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    environment:
+      LS_JAVA_OPTS: "-Xms512m -Xmx512m"
+      ELASTIC_PASSWORD: 2PpwgL83.5fZ  # Senha do usuário elastic
+    networks:
+      - esnet
+
+volumes:
+  esdata:
+    driver: local
+
+networks:
+  esnet:
+    driver: bridge
